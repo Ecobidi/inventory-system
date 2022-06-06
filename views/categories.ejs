@@ -1,0 +1,81 @@
+<% include partials/top %>
+
+  <div class="row space">
+    <div class="col-12 d-flex justify-content-between align-items-center underline pb-2">
+      <h3 class="title text-white">Categories</h3>
+      <div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCategoryModal">Create new category</button>
+      </div>
+    </div> 
+  </div>
+
+    <div class="row">
+      <div class="col-12">
+        <h4 class="font-weight-light text-center text-white bg-primary p-2 m-0 table-top">List of Categories</h4>
+        <table class="table table-bordered table-striped table-inverse text-white">
+          <thead class="thead-default">
+            <tr>
+              <th>#</th>
+              <th>Name of Category</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              <% categories.forEach((item, index) => { %>
+                <tr>
+                  <td><%= index + 1 %></td>
+                  <td ><%= item.name %></td>
+                  <% /* %>
+                  <td>
+                    <img src="<%= categoryImageDir + item.image %>" class="img-thumbnail img-responsive basic-thumbnail" alt=""> 
+                  </td>
+                  <% */ %>
+                  <td>
+                    <a onclick="return confirm('Proceed to delete category')"  href='<%= "/categories/delete/" + item._id %>' class="btn btn-sm btn-danger">Remove</a>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+        </table>
+      </div>
+    </div>
+    
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Add New Category Modal -->
+<div class="modal fade" id="newCategoryModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">New category</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div class="modal-body">
+    <form action="/categories/new" method="POST">
+      <div class="form-group">
+        <label>Category Name:</label>
+        <input type="text" class="form-control" name="name" placeholder="category name...">
+      </div>
+      <% /* %>
+      <div class="form-group">
+        <label>Category Image:</label>
+        <input disabled type="file" class="form-control-file form-control" name="image" placeholder="upload image" aria-describedby="fileHelpId" accept=".jpg,.png,.gif,.jpeg">
+        <small id="fileHelpId" class="form-text text-muted">Accepts only .JPG, .JPEG, .PNG, .GIF image formats.</small>
+      </div>
+      <% */ %>
+      <div class="form-group">
+        <input type="submit" class="btn btn-primary form-control" value="Proceed">
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+</div>
+
+<% include partials/bottom %>

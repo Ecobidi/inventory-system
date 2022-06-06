@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="/css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="/css/style.css" >
+  <link rel="stylesheet" href="/css/app.css" type="text/css" />
+  <title><%= appname %></title>
+  
+  <style>
+    .bg-primary, .btn-primary {
+      background-color: #3244a2 !important;
+    }
+    .text-primary {
+      color: #3244a2 !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-md navbar-dark bg-primary d-flex py-0 text-white justify-content-between">
+    <div class="d-flex align-items-center" >
+      <a class="display-4 mr-2" href="#">
+        <i class="fa fa-cart-arrow-down text-white display-4" aria-hidden="true"></i>
+      </a>
+      <h4 class="font-weight-normal app-title"><%= appname %>
+      </h4>
+    </div>
+
+    <div>
+      <nav class="nav">
+        <a class="mx-2 btn btn-sm btn-outline-light" href="/dashboard">Dashboard</a>
+      <% if (user){ %>
+        <a class="btn btn-sm btn-outline-light" href="/logout">Logout</a>
+      <% }; %>
+      </nav>
+    </div>
+  </nav>
+
+  <main class="container-fluid">
+    <div class="row">
+        <!-- invoice column -->
+        <div class="col-lg-3 pt-3 overflow">
+          <h4 class="mb-4 underline pb-2 text-white">Sales Invoice</h4>
+          <div id="invoice-view">
+            <ul class="list-group" id="invoice-list"></ul>
+            <!-- billing section -->
+            <div class="billing-section">
+              <div class="bg-info text-white p-1 d-flex justify-content-between">
+                <strong>Total:</strong>
+                <strong>&#8358;<span id="total">0.00</span></strong>
+              </div>
+            </div>
+          </div>
+          <div class="bg-dark py-2 px-1 d-flex justify-content-between">
+            <button type="button" id="checkout" class="btn btn-outline-info text-white">Checkout</button>
+          </div>
+        </div>
+        <!-- item grid -->
+        <div class="col-lg-7 pt-3 overflow">
+          <h4 class="mb-4 underline pb-2 text-white">Products</h4>
+          <div class="row d-flex align-items-stretch" id="product-grid">
+
+            <% products.forEach(item => { %>
+            <div data-id="<%= item._id %>" data-price="<%= item.price %>" data-name="<%= item.name%>" class="col-lg-4 product bg-white">
+              <p class="mb-0 product-price text-primary p-2">&#8358;<%= item.price %></p>
+              <img src="<%= item.image %>" alt="" class="img-responsive product-image">
+              <p class="text-center p-2 mb-0"><small class="product-name"><%= item.name %></small></p>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <!-- categories list -->
+        <div class="col-lg-2 pt-3 overflow">
+          <h4 class="mb-4 underline pb-2 text-white">Categories</h4>
+          <div class="bg-dark py-2">
+            <button data-name="" id="all-category" class="btn btn-outline-info d-block text-white">All categories</button>
+          </div>
+          <ul class="list-group" id="category-list">
+            <% categories.forEach((item) => { %>
+              <li class="list-group-item p-0 m-0">
+                  <div class="category bg-info" data-name="<%= item.name %>">
+                    <img src='<%= item.image || "/images/dummy-image.png" %>' alt="" class="img-responsive category-image">
+                    <div class="text-center">
+                      <strong><%= item.name %></strong>
+                    </div>
+                  </div>
+              </li>
+            <% }) %>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <footer class="text-center text-white bg-success py-1">
+    <input id="staffid" type="hidden" name="staffid" value="<%= user._id %>">
+    <p class="my-0 py-0 px-2 d-flex justify-content-between">
+      <small>Status: <span id="status"></span></small>
+      <small>Copyright &copy; 2022, <%= appname %>.</small>
+    </p>
+  </footer>
+  <script src="/lib/js/jquery.min.js"></script>
+  <script src="/lib/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- global variables -->
+  <script>
+    const headerHeight = 56, footerHeight = 32;
+    let invoiceMap = {};
+    let domInvoiceList = document.getElementById("invoice-list");
+    let domProductGrid = document.getElementById("product-grid");
+    let totalCost = document.getElementById("total");
+    let invoiceView = document.getElementById("invoice-view");
+
+    function Product(id, name, price) {
+      this.productId = id;
+      this.name = name;
+      this.price = price;
+      this.qty = 1;
+    }
+  </script>
+  <!-- helper functions -->
+  <script>
+    function navigateToPrintPage() {
+      localStorage.setItem('invoice', JSON.stringify(invoiceMap));
+      window.location.href = '/print.html';
+    }
+
+    function printInvoice(elem) {
+      let myWindow = window.open("", "PRINT", "height=600,width=600");
+      myWindow.document.write(`
+        <html>
+          <head><title>Invoice Title</title></head>
+          <body>
+            <h2>Receipt</h2>
+            ${invoiceView.innerHTML}
+          </body>
+        </html>`
+      );
+      myWindow.document.close(); // necessary for IE >= 10
+      myWindow.focus(); // necessary for IE >= 10
+      myWindow.print();
+      myWindow.close();
+    }
+
+    function resize(e) {
+      $(".overflow").css("height", e.currentTarget.innerHeight - (headerHeight + footerHeight) + "")
+    }
+
+    function addProductToInvoice(e) {
+      const { id, name, price } = e.currentTarget.dataset;
+      let product = new Product(id, name, price);
+      // check if the product is already in the list
+      if (invoiceMap.hasOwnProperty(id)) { // product is in invoiceMap, do nothing
+        return; 
+      } else { // product is not in invoiceMap
+        // insert into invoiceMap
+        invoiceMap[id] = product;
+        // insert into dom
+        $("#invoice-list").prepend(createInvoiceItem(product));
+      }
+      updateTotal(); // update total cost
+      reInitializeEventListeners();
+    }
+
+    function updateInvoiceItemQty(e) {
+      let id = e.currentTarget.dataset.id;
+      let qty = parseInt(e.currentTarget.value);
+      // set item qty
+      invoiceMap[id].qty = qty;
+      // update qty in dom
+      updateDOMInvoicePrice(e.currentTarget, qty);
+      updateTotal(); // update total
+    }
+
+    function updateDOMInvoicePrice(element, qty) {
+      element.value = (isNaN(qty)) ? 1 : qty;
+      let topParent = element.parentNode.parentNode.parentNode;
+      let priceElement = topParent.querySelector(".invoice-item-price");
+      let price = qty * Number(topParent.dataset.price);
+      priceElement.innerText = (isNaN(price)) ? 0 : price;
+    }
+
+    function updateTotal() {
+      let total = 0;
+      for (let key in invoiceMap) {
+        if (invoiceMap.hasOwnProperty(key)) {
+          total += (invoiceMap[key].price * invoiceMap[key].qty);
+        }
+      }
+      totalCost.innerText = total + "";
+    }
+    
+    // deleteInvoicItem event reInitializer
+    function reInitializeEventListeners() {
+      // event listener for .invoice-item-delete
+      $(".invoice-item-delete").unbind("click", deleteInvoiceItem);
+      $(".invoice-item-delete").bind("click", deleteInvoiceItem);
+
+      // event listener for .invoice-item-qty input change
+      $(".invoice-item-qty").unbind("input", updateInvoiceItemQty);
+      $(".invoice-item-qty").bind("input", updateInvoiceItemQty);
+
+      // event listener for .products click
+      $(".product").unbind("click", addProductToInvoice);
+      $(".product").bind("click", addProductToInvoice);
+    }
+
+    // remove invoice-item from invoice-list
+    function deleteInvoiceItem(e) {
+      const id = e.currentTarget.dataset.id;
+      // remove from invoiceMap
+      delete invoiceMap[id];
+      // remove from dom
+      domInvoiceList.removeChild(document.getElementById(id));
+    }
+
+    function clearInvoiceList() {
+      domInvoiceList.innerHTML = "";
+    }
+
+    function setStatus(status) {
+      $("#status").text(status);
+    }
+
+    let createInvoiceItem = (item) => {
+      return (`<li id="${item.productId}" data-id="${item.productId}" class="list-group-item invoice-item d-flex justify-content-between pl-2 py-2 pr-1">
+              <div class="invoice-item-content mr-2" data-price=${item.price}>
+                <div class="invoice-item-content-top d-flex justify-content-between">
+                  <strong class="invoice-item-name">${item.name}</strong>
+                  <strong>&#8358;<span class="invoice-item-price">${item.price}</span></strong>
+                </div>
+                <div class="invoice-item-content-bottom d-flex justify-content-between">
+                  <div class="justify-content-between">
+                    <small>Unit Price: </small>
+                    <small>&#8358;${item.price}</small>
+                  </div>
+                  
+                  <div class="justify-content-between">
+                    <small>Quantity: </small>
+                    <input data-id="${item.productId}" type="number" class="invoice-item-qty" value="${item.qty}">
+                  </div>
+                </div>
+              </div>
+              <span class="invoice-item-delete d-flex justify-content-center align-items-center text-danger" data-id="${item.productId}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </span>
+            </li>`);
+    }
+
+    let createProductItem = (item) => {
+      return (`<div data-id="${item._id}" data-price="${item.price}" data-name="${item.name}" class="col-lg-4 product bg-white">
+        <p class="mb-0 product-price text-primary p-2">&#8358;${item.price}</p>
+        <img src="${item.image}" alt="" class="img-responsive product-image">
+        <p class="text-center p-2 mb-0"><small class="product-name">${item.name}</small></p>
+      </div>`)
+    }
+
+    let createCategoryItem = (item) => {
+      return (`<li class="list-group-item p-0 m-0">
+      <div class="category" data-name="${item.name}">
+        <img src="${ item.image}" alt="" class="img-responsive category-image">
+        <div class="text-center">
+          <strong>${item.name}</strong>
+        </div>
+      </div>
+    </li>`);
+    }
+  </script>
+  <!-- Event handlers -->
+  <script>
+    // event listeners
+    $(window).on("resize", resize);
+    $(window).on("load", (e) => {
+      resize(e);
+      // initialize invoice delete listener
+      reInitializeEventListeners;
+    });
+
+    // checkout click listener
+    $("#checkout").click((e) => {
+      if (Object.keys(invoiceMap).length == 0) {
+        setStatus("Invoice is empty!!!");
+        return;
+      }
+      const staffid = $("#staffid").val();
+      $.ajax({
+        url: "/invoices/new/" + staffid,
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(invoiceMap)
+      })
+      .done((data, textStatus, jqXHR) => {
+        if (textStatus == "success") {
+          setStatus("Success");
+          navigateToPrintPage()
+        } else {
+          setStatus("Failure");
+        }
+      });
+    })
+
+    // product click listener
+    $(".product").click(addProductToInvoice);
+  
+    // category click listener
+    $(".category").click(fetchProductsByCategory);
+
+
+
+    // all category button click listener
+    $("#all-category").click(fetchProductsByCategory);
+
+    function fetchProductsByCategory(e) {
+      let category = e.currentTarget.dataset.name || "";
+      console.log(category);
+      $.ajax({
+        url: "/products/?category=" + category,
+        method: "GET"
+      })
+      .done((data, textStatus, jqXHR) => {
+        data = JSON.parse(data);
+        if (textStatus == "success") {
+          setStatus("Product list updated");
+          populateDomProductGrid(data);
+        } else {
+          setStatus("Failure to update product list");
+        }
+        reInitializeEventListeners();
+      });
+    }
+
+    function populateDomProductGrid(data) {
+      // clear product grid
+      $("#product-grid").empty();
+      data.forEach((product) => {
+        // insert into dom
+        $("#product-grid").prepend(createProductItem(product));
+      })
+    }
+  </script>
+</body>
+</html>

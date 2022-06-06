@@ -1,0 +1,115 @@
+<!-- Add New Category Modal -->
+<div class="modal fade" id="newCategoryModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New category</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+
+      <div class="modal-body">
+        <form action="/categories/new" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label>Category Name:</label>
+            <input type="text" class="form-control" name="name" placeholder="category name...">
+          </div>
+          
+          <div class="form-group">
+            <label>Category Image:</label>
+            <input type="file" class="form-control-file" name="image" placeholder="upload image" aria-describedby="fileHelpId" accept=".jpg,.png,.gif,.jpeg">
+            <small id="fileHelpId" class="form-text text-muted">Accepts only .JPG, .JPEG, .PNG, .GIF image formats.</small>
+          </div>
+          <div class="form-group d-inline-block">
+            <input type="submit" class="form-control" value="Save">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add New Product Modal -->
+<div class="modal fade" id="newProductModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+
+      <div class="modal-body">
+        <form action="/products/new" method="POST" enctype="multipart/form-data">
+          <div class="form-group d-inline-block">
+            <input type="text" class="form-control" name="name" placeholder="product name...">
+          </div>
+          <div class="form-group d-inline-block">
+            <input type="number" class="form-control" name="price" placeholder="price...">
+          </div>
+          
+          <div class="form-group">
+            <label>Select Category</label>
+            <select class="form-control" name="category" id="">
+              <% categories.forEach((item)=> { %>
+                <option><%= item.name %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Upload Product Image:</label>
+            <input type="file" class="form-control-file" name="image" placeholder="Choose image" aria-describedby="fileHelpId" accept=".jpg,.png,.gif,.jpeg">
+            <small id="fileHelpId" class="form-text text-muted">Accepts only .JPG, .JPEG, .PNG, .GIF image formats.</small>
+          </div>
+          <div class="form-group d-inline-block">
+            <input type="submit" class="form-control" value="Save">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Staff Modal -->
+<div class="modal fade" id="newStaffModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Staff</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+
+      <div class="modal-body">
+        <form action="/staff/new" method="POST">
+          <div class="form-group">
+            <label class="d-inline-block">Staff Id</label>
+            <input type="text" class="form-control" name="staffid" placeholder="Choose a unique staff id...">
+          </div>
+          <div class="form-group">
+            <label class="d-inline-block">Surname</label>
+            <input type="text" class="form-control" name="surname" placeholder="Enter surname">
+          </div>
+          <div class="form-group">
+            <label class="d-inline-block">Other names</label>
+            <input type="text" class="form-control" name="othername" placeholder="Enter other names...">
+          </div>
+          <div class="form-group d-inline-block">
+              <label class="d-inline-block">Phone:</label>
+            <input type="text" class="form-control" name="phone" placeholder="phone number">
+          </div>
+          <div class="form-group">
+            <label class="d-inline-block">Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter password">
+          </div>
+          <div class="form-group">
+            <input type="submit" class="form-control btn btn-outline-primary" value="Create Staff">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

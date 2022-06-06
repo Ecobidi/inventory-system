@@ -1,0 +1,156 @@
+* { box-sizing: border-box; }
+
+body {
+  background-color: #f1f1f1;
+}
+
+
+#sidenav {
+  position: relative;
+  left: 0;
+}
+
+#sidenav a {
+  color: #fff !important;
+}
+
+#sidenav a:hover {
+  color: #e1e1e1 !important;
+}
+
+#sidenav .fa {
+  margin-right: 10px;
+}
+
+#top-navbar {
+  background-color: #4e342e;
+}
+
+a.card {
+  cursor: pointer;
+  flex-direction: row;
+  padding: 0 12px 0 0;
+  width: 100%;
+}
+
+a.card:hover {
+  text-decoration: none;
+}
+
+a.card > div {
+  align-self: center;
+}
+
+a.card > .icon {
+  align-self: flex-end;
+  font-size: 4.4em;
+  margin-right: 12px;
+}
+
+a.card div * {
+  margin: 0;
+  padding: 0;
+}
+
+a.card h4 {
+  font-size: 3.0em;
+  font-weight: 400;
+}
+
+a.card p {
+  margin-bottom: 15px;
+}
+
+@media (min-width: 768px) {
+  .icon-div i {
+    position: relative;
+  }
+}
+
+.overflow {
+  overflow-y: scroll;
+}
+
+.invoice-item {
+  border: 1px solid #2222226b;
+}
+
+.invoice-item:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+#invoice-list, #product-grid, #category-list {
+  overflow-x: scroll;
+}
+
+.invoice-item-content {
+  width: 100%;
+}
+
+.invoice-item-delete {
+  width: 28px;
+  min-height: 34px;
+  align-self: stretch;
+  vertical-align: middle;
+  text-align: center;
+  z-index: 200;
+}
+
+.invoice-item-qty {
+  width: 3rem;
+  padding: 0;
+}
+
+.product {
+  padding: 4px 8px;
+  background-color: #fff !important;
+  cursor: pointer;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product .product-price, .product-name {
+  font-weight: 500 !important;
+}
+
+.product-image {
+  width: 110px;
+  height: 110px;
+  border-radius: .25rem;
+  border: 1px solid #dee2e6;
+  max-width: 100%;
+}
+
+.category {
+  padding: 4px;
+  margin: 0px 0px 6px 0px;
+  background-color: #fff !important;
+  cursor: pointer;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}
+
+.category-image {
+  width: 110px;
+  height: 110px;
+  border-radius: .25rem;
+  border: 1px solid #dee2e6;
+  max-width: 200px;
+}
+
+.barcode {
+  font-size: 60px;
+  margin-bottom: 0 !important;
+}
+
+.small-product-image {
+  width: 70px;
+  height: 65px;
+}
+
+#all-category {
+  width: 100%;
+}

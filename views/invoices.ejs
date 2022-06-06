@@ -1,0 +1,41 @@
+<% include partials/top %>
+<div class="row space">
+  <div class="col-12 d-flex justify-content-between align-items-center underline pb-2">
+    <h3 class="title text-white">Invoices</h3>
+  </div> 
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <h4 class="font-weight-light text-center text-white bg-primary p-2 m-0 table-top">List of Invoices</h4>
+    <table class="table table-striped table-inverse table-bordered text-white">
+      <thead class="thead-default">
+        <tr>
+          <th>Invoice ID</th>
+          <th>Total Amount</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% invoices.forEach(function(invoice){ %>
+          <tr>
+            <td><%= invoice._id %></td>
+            <td><%= invoice.total %></td>
+            <td><%= invoice.date %></td>
+            <td>
+              <a href='<%= "/invoices/delete/" + invoice._id %>' class="btn btn-sm btn-danger">Remove</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<% include partials/bottom %>

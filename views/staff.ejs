@@ -1,0 +1,96 @@
+<% include partials/top %>
+
+<div class="row space">
+  <div class="col-12 d-flex justify-content-between align-items-center underline pb-2">
+    <h3 class="title text-white">Staffs</h3>
+    <div>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createStaffModal">Add Staff</button>
+    </div>
+  </div> 
+</div>
+<div class="row">
+  <div class="col-12">
+    <table class="table table-striped table-inverse table-bordered text-white">
+      <thead class="thead-default">
+        <tr>
+          <th>Staff ID</th>
+          <th>Surname</th>
+          <th>Othername</th>
+          <th>Telephone</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          <% staff.forEach((doc) => { %>
+            <tr>
+              <td scope="row"><%= doc.staffid %></td>
+              <td><%= doc.name.surname %></td>
+              <td><%= doc.name.othername %></td>
+              <td><%= doc.phone %></td>
+              <td>
+                <a href='<%= "/staff/remove/" + doc._id %>' class="btn btn-sm btn-danger">Remove</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<!-- Staff Modal -->
+<div class="modal fade" id="createStaffModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Add New Staff</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+<form action="/staff/new" method="POST">
+  <fieldset class="row px-2">
+  <div class="form-group col-lg-6">
+    <label>Authentication Staff ID:</label>
+    <input type="text" class="form-control" name="staffid" placeholder="StaffId">
+  </div>
+  <div class="form-group col-lg-6">
+    <label>Surname:</label>
+    <input type="text" class="form-control" name="surname" placeholder="Surname">
+  </div>
+  <div class="form-group col-lg-6">
+    <label>Other Names:</label>
+    <input type="text" class="form-control" name="othername" placeholder="other names...">
+  </div>
+  <div class="form-group col-lg-6">
+    <label>Mobile Phone Number:</label>
+    <input type="text" class="form-control" name="phone" placeholder="phone number">
+  </div>
+  <div class="form-group col-lg-6">
+    <label>Password:</label>
+    <input type="password" class="form-control" name="password" placeholder="password">
+  </div>
+  <div class="form-group col-lg-6">
+    <label>Retype Password:</label>
+    <input type="password" class="form-control" name="confirm_password" placeholder="Retype password">
+  </div>
+  <div class="form-group col-12">
+    <input type="submit" class="form-control btn-primary" value="Proceed">
+  </div>
+  </fieldset>
+</form>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<% include partials/bottom %>

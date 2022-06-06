@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/lib/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/lib/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Print Invoice</title>
+</head>
+<body>
+
+<div class="container">
+  <div class="row">
+      <div class="offset-4 col-4 pt-3 overflow">
+        <h4 class="mb-4 text-center">Invoice</h4>
+        <div id="invoice-view">
+          <ul class="list-group" id="invoice-list"></ul>
+          <!-- billing section -->
+          <div class="billing-section">
+            <div class="bg-info text-white p-1 d-flex justify-content-between">
+              <strong>Total:</strong>
+              <strong>&#8358;<span id="total">0.00</span></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+  <script src="/lib/js/jquery.min.js"></script>
+  <script src="/lib/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  let createInvoiceItem = (item) => {
+    return (`<li id="${item.productId}" data-id="${item.productId}" class="list-group-item invoice-item d-flex justify-content-between pl-2 py-2 pr-1">
+        <div class="invoice-item-content mr-2" data-price=${item.price}>
+          <div class="invoice-item-content-top d-flex justify-content-between">
+            <strong class="invoice-item-name">${item.name}</strong>
+            <strong>&#8358;<span class="invoice-item-price">${item.price}</span></strong>
+          </div>
+          <div class="invoice-item-content-bottom d-flex justify-content-between">
+            <div class="justify-content-between">
+              <small>Unit Price: </small>
+              <small>&#8358;${item.price}</small>
+            </div>
+            
+            <div>
+              <small>Quantity: </small>
+              <span>${item.qty}</span>
+            </div>
+          </div>
+        </div>
+        
+      </li>`);
+    }
+
+
+    $(document).ready((e) => {
+      let invoice = JSON.parse(localStorage.getItem('invoice'));
+      console.log(invoice);
+      
+      for (let key in invoice) {
+        if (invoice.hasOwnProperty(key))
+          console.log(invoice[key]);
+          $("#invoice-list").prepend(createInvoiceItem(invoice[key]));
+      }
+
+      window.print();
+    });
+
+    $(document).unload((e) => {
+      localStorage.clear();
+    })
+</script>
+
+</body>
